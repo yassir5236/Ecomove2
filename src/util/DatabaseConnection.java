@@ -40,8 +40,6 @@ public class DatabaseConnection {
 
 
 
-
-
 package util;
 
 import java.sql.Connection;
@@ -57,29 +55,33 @@ public class DatabaseConnection {
     private static Connection connection;
 
     private DatabaseConnection() {
+        // Constructeur privé pour éviter l'instanciation
     }
 
+    // Méthode pour obtenir une connexion
     public static synchronized Connection getConnection() {
-        if (connection == null) {
-            try {
-                System.out.println("here before initializing connection");
+        try {
+            // Vérifier si la connexion est fermée ou null, et tenter de la réouvrir si nécessaire
+            if (connection == null || connection.isClosed()) {
+                System.out.println("Initializing a new connection...");
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            } catch (SQLException e) {
-                e.printStackTrace();
-
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Vous pouvez également gérer les exceptions plus finement
         }
         return connection;
     }
 
+    // Méthode pour fermer la connexion
     public static synchronized void closeConnection() {
         if (connection != null) {
             try {
                 connection.close();
-                connection = null;
+                connection = null;  // Réinitialiser à null après la fermeture
+                System.out.println("Connection closed.");
             } catch (SQLException e) {
                 e.printStackTrace();
-
             }
         }
     }

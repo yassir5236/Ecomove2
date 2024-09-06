@@ -16,7 +16,7 @@ public class ClientDAO {
 
     // Méthode pour ajouter un client à la base de données
     public boolean addClient(Client client) {
-        String sql = "INSERT INTO clients (id, nom, prenom, email, telephone) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO client (id, nom, prenom, email, telephone) VALUES (?, ?, ?, ?, ?)";
 
         try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -38,7 +38,7 @@ public class ClientDAO {
 
     // Méthode pour rechercher un client par email
     public Optional<Client> findClientByEmail(String email) {
-        String sql = "SELECT * FROM clients WHERE email = ?";
+        String sql = "SELECT * FROM client WHERE email = ?";
         Client client = null;
 
         try (
@@ -66,12 +66,12 @@ public class ClientDAO {
 
     // Méthode pour récupérer tous les clients
     public List<Client> getAllClients() {
-        String sql = "SELECT * FROM clients";
-        List<Client> clients = new ArrayList<>();
+        String sql = "SELECT * FROM client";
+        List<Client> clients = new ArrayList<>();  // Nom de la liste modifié
 
         try (
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(sql)) {
 
             while (resultSet.next()) {
                 Client client = new Client(
@@ -81,21 +81,20 @@ public class ClientDAO {
                         resultSet.getString("email"),
                         resultSet.getString("telephone")
                 );
-                clients.add(client);
+                clients.add(client);  // Utilisez la liste clients pour ajouter
             }
 
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération des clients : " + e.getMessage());
         }
 
-        return clients;
+        return clients;  // Retournez la liste clients
     }
 
-    // Méthode pour mettre à jour un client
     public boolean updateClient(Client client) {
-        String sql = "UPDATE clients SET nom = ?, prenom = ?, email = ?, telephone = ? WHERE id = ?";
+        String sql = "UPDATE client SET nom = ?, prenom = ?, email = ?, telephone = ? WHERE id = ?";
 
-        try (
+        try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
             preparedStatement.setString(1, client.getNom());
@@ -114,9 +113,10 @@ public class ClientDAO {
         return false;
     }
 
+
     // Méthode pour supprimer un client
     public boolean deleteClient(UUID clientId) {
-        String sql = "DELETE FROM clients WHERE id = ?";
+        String sql = "DELETE FROM client WHERE id = ?";
 
         try (
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -137,7 +137,7 @@ public class ClientDAO {
 
     public Client findClientById(UUID id) {
         Client client = null;
-        String query = "SELECT * FROM public.client WHERE id = ?";
+        String query = "SELECT * FROM client WHERE id = ?";
 
         try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
@@ -163,11 +163,11 @@ public class ClientDAO {
 
 
     public List<Client> searchClients(String nameOrEmail) {
-        List<Client> clients = new ArrayList<>();
-        String query = "SELECT * FROM public.client WHERE nom ILIKE ? OR email ILIKE ?";
+        List<Client> clients = new ArrayList<>();  // Nom de la liste modifié
+        String query = "SELECT * FROM client WHERE nom ILIKE ? OR email ILIKE ?";
 
-        try (Connection connection = DatabaseConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
+        try (
+                PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, "%" + nameOrEmail + "%");
             statement.setString(2, "%" + nameOrEmail + "%");
             ResultSet resultSet = statement.executeQuery();
@@ -180,13 +180,13 @@ public class ClientDAO {
                         resultSet.getString("email"),
                         resultSet.getString("telephone")
                 );
-                clients.add(client);
+                clients.add(client);  // Ajoutez à la liste clients
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return clients;
+        return clients;  // Retournez la liste clients
     }
 
 }

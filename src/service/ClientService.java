@@ -26,8 +26,8 @@ public class ClientService {
     }
 
     // Mettre à jour les informations d'un client
-    public void updateClient(Client client) {
-        clientDAO.updateClient(client);
+    public boolean updateClient(Client client) {
+        return clientDAO.updateClient(client);
     }
 
     // Supprimer un client par son ID
