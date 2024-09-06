@@ -87,6 +87,8 @@ public class MainConsole {
     private final OffreUI offreUI;
     private final BilletUI billetUI;
     private final Scanner scanner;
+    private final ClientUI clientUI;
+    private final ReservationUI reservationUI;
 
     public MainConsole() {
         this.partenaireUI = new PartenaireUI();
@@ -94,6 +96,8 @@ public class MainConsole {
         this.offreUI = new OffreUI();
         this.billetUI = new BilletUI();
         this.scanner = new Scanner(System.in);
+        this.clientUI = new ClientUI();
+        this.reservationUI = new ReservationUI();
     }
 
     public void start() {
@@ -124,7 +128,10 @@ public class MainConsole {
         System.out.println("2. Gestion des Contrats");
         System.out.println("3. Gestion des Offres Promotionnelles");
         System.out.println("4. Gestion des Billets");
-        System.out.println("5. Quitter");
+        System.out.println("5. Gestion des Clients");
+        System.out.println("6. Gestion des Reservations");
+
+        System.out.println("7. Quitter");
         System.out.print("Choisissez une option : ");
     }
 
@@ -154,7 +161,15 @@ public class MainConsole {
             case 4:
                 billetUI.start();
                 break;
+
             case 5:
+                clientUI.start(scanner);
+                break;
+
+            case 6:
+                reservationUI.start(scanner);
+                break;
+            case 7:
                 System.out.println("Au revoir!");
                 break;
             default:

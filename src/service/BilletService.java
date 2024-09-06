@@ -28,4 +28,9 @@ public class BilletService {
     public void deleteBillet(UUID id) {
         billetDAO.deleteBillet(id);
     }
+
+    // Nouvelle méthode pour rechercher des billets
+    public List<Billet> searchBillets(String villeDepart, String villeDestination, String dateDepart) {
+        return billetDAO.searchBillets(villeDepart, villeDestination, dateDepart);
+    }
 }

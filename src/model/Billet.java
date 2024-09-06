@@ -107,6 +107,11 @@ import java.time.Duration;
 
 
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.UUID;
 
 public class Billet {
     private UUID id;
@@ -116,11 +121,11 @@ public class Billet {
     private BigDecimal prixVente;
     private LocalDate dateVente;
     private StatutBillet statutBillet;
-    private String villeDepart;        // Nouvelle colonne
-    private String villeDestination;   // Nouvelle colonne
-    private LocalDate dateDepart;      // Nouvelle colonne
-    private LocalTime horaire;         // Nouvelle colonne
-    private Duration duree;            // Nouvelle colonne
+    private String villeDepart;
+    private String villeDestination;
+    private LocalDate dateDepart;
+    private LocalTime horaire;
+    private Duration duree;
 
     // Constructeur
     public Billet(UUID id, UUID contratId, TypeTransport typeTransport, BigDecimal prixAchat, BigDecimal prixVente, LocalDate dateVente, StatutBillet statutBillet,
@@ -139,7 +144,63 @@ public class Billet {
         this.duree = duree;
     }
 
-    // Getters et Setters pour les nouveaux attributs
+    // Getters
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getContratId() {
+        return contratId;
+    }
+
+    public void setContratId(UUID contratId) {
+        this.contratId = contratId;
+    }
+
+    public TypeTransport getTypeTransport() {
+        return typeTransport;
+    }
+
+    public void setTypeTransport(TypeTransport typeTransport) {
+        this.typeTransport = typeTransport;
+    }
+
+    public BigDecimal getPrixAchat() {
+        return prixAchat;
+    }
+
+    public void setPrixAchat(BigDecimal prixAchat) {
+        this.prixAchat = prixAchat;
+    }
+
+    public BigDecimal getPrixVente() {
+        return prixVente;
+    }
+
+    public void setPrixVente(BigDecimal prixVente) {
+        this.prixVente = prixVente;
+    }
+
+    public LocalDate getDateVente() {
+        return dateVente;
+    }
+
+    public void setDateVente(LocalDate dateVente) {
+        this.dateVente = dateVente;
+    }
+
+    public StatutBillet getStatutBillet() {
+        return statutBillet;
+    }
+
+    public void setStatutBillet(StatutBillet statutBillet) {
+        this.statutBillet = statutBillet;
+    }
+
     public String getVilleDepart() {
         return villeDepart;
     }
@@ -180,7 +241,7 @@ public class Billet {
         this.duree = duree;
     }
 
-    // Méthode toString mise à jour
+    // Méthode toString
     @Override
     public String toString() {
         return "Billet{" +
@@ -199,7 +260,5 @@ public class Billet {
                 '}';
     }
 }
-
-
 
 
