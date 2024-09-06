@@ -50,7 +50,7 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
 
-    private static final String URL = "jdbc:postgresql://localhost:5432/ecomove";
+    private static final String URL = "jdbc:postgresql://localhost:5432/Ecomove2";
     private static final String USER = "postgres";
     private static final String PASSWORD = "User_Password";
 
