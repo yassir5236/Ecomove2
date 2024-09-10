@@ -1,6 +1,6 @@
 package dao;
 
-
+import dao.interfaces.IReservationDAO;
 import model.Reservation;
 import util.DatabaseConnection;
 
@@ -10,25 +10,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import java.sql.Timestamp;
-
-public class ReservationDAO {
+public class ReservationDAO implements IReservationDAO {
     private final Connection connection = DatabaseConnection.getConnection();
 
-    // Méthode pour ajouter une réservation
-
+    @Override
     public boolean addReservation(Reservation reservation) {
         String sql = "INSERT INTO reservations (id, client_id, billet_id, date_reservation) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
             preparedStatement.setObject(1, reservation.getId());
             preparedStatement.setObject(2, reservation.getClientId());
             preparedStatement.setObject(3, reservation.getBilletId());
-
-            // Conversion de LocalDateTime en Timestamp pour le champ date_reservation
-            Timestamp timestamp = Timestamp.valueOf(reservation.getDateReservation());
-            preparedStatement.setTimestamp(4, timestamp);
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(reservation.getDateReservation()));
 
             int affectedRows = preparedStatement.executeUpdate();
             return affectedRows > 0;
@@ -40,14 +33,12 @@ public class ReservationDAO {
         return false;
     }
 
-    // Méthode pour trouver une réservation par son ID
+    @Override
     public Optional<Reservation> findReservationById(UUID reservationId) {
         String sql = "SELECT * FROM reservations WHERE id = ?";
         Reservation reservation = null;
 
-        try (
-                PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setObject(1, reservationId);
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -68,14 +59,12 @@ public class ReservationDAO {
         return Optional.ofNullable(reservation);
     }
 
-
-    // Méthode pour récupérer toutes les réservations
+    @Override
     public List<Reservation> getAllReservations() {
         String sql = "SELECT * FROM reservations";
         List<Reservation> reservations = new ArrayList<>();
 
-        try (
-             Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
 
             while (resultSet.next()) {
@@ -95,13 +84,11 @@ public class ReservationDAO {
         return reservations;
     }
 
-    // Méthode pour mettre à jour une réservation
+    @Override
     public boolean updateReservation(Reservation reservation) {
         String sql = "UPDATE reservations SET client_id = ?, billet_id = ?, date_reservation = ? WHERE id = ?";
 
-        try (
-             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setObject(1, reservation.getClientId());
             preparedStatement.setObject(2, reservation.getBilletId());
             preparedStatement.setTimestamp(3, Timestamp.valueOf(reservation.getDateReservation()));
@@ -116,7 +103,8 @@ public class ReservationDAO {
 
         return false;
     }
-    // Méthode pour supprimer une réservation par son ID
+
+    @Override
     public boolean deleteReservation(UUID reservationId) {
         String sql = "DELETE FROM reservations WHERE id = ?";
 
@@ -133,8 +121,7 @@ public class ReservationDAO {
         return false;
     }
 
-
-    // Méthode pour trouver les réservations par l'ID du client
+    @Override
     public List<Reservation> findReservationsByClientId(UUID clientId) {
         String sql = "SELECT * FROM reservations WHERE client_id = ?";
         List<Reservation> reservations = new ArrayList<>();
@@ -160,5 +147,4 @@ public class ReservationDAO {
 
         return reservations;
     }
-
 }

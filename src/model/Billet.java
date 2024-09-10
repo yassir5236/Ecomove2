@@ -1,164 +1,45 @@
-
-
 package model;
-
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
-/*
-public class Billet {
-    private UUID id;
-    private UUID contratId;
-    private TypeTransport typeTransport;
-    private BigDecimal prixAchat;
-    private BigDecimal prixVente;
-    private Date dateVente;
-    private StatutBillet statutBillet;
-
-    public Billet(UUID id, UUID contratId, TypeTransport typeTransport, BigDecimal prixAchat, BigDecimal prixVente, Date dateVente, StatutBillet statutBillet) {
-        this.id = id;
-        this.contratId = contratId;
-        this.typeTransport = typeTransport;
-        this.prixAchat = prixAchat;
-        this.prixVente = prixVente;
-        this.dateVente = dateVente;
-        this.statutBillet = statutBillet;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getContratId() {
-        return contratId;
-    }
-
-    public void setContratId(UUID contratId) {
-        this.contratId = contratId;
-    }
-
-    public TypeTransport getTypeTransport() {
-        return typeTransport;
-    }
-
-    public void setTypeTransport(TypeTransport typeTransport) {
-        this.typeTransport = typeTransport;
-    }
-
-    public BigDecimal getPrixAchat() {
-        return prixAchat;
-    }
-
-    public void setPrixAchat(BigDecimal prixAchat) {
-        this.prixAchat = prixAchat;
-    }
-
-    public BigDecimal getPrixVente() {
-        return prixVente;
-    }
-
-    public void setPrixVente(BigDecimal prixVente) {
-        this.prixVente = prixVente;
-    }
-
-    public Date getDateVente() {
-        return dateVente;
-    }
-
-    public void setDateVente(Date dateVente) {
-        this.dateVente = dateVente;
-    }
-
-    public StatutBillet getStatutBillet() {
-        return statutBillet;
-    }
-
-    public void setStatutBillet(StatutBillet statutBillet) {
-        this.statutBillet = statutBillet;
-    }
 
 
-    @Override
-    public String toString() {
-        return "Billet{" +
-                "id=" + id +
-                ", contratId=" + contratId +
-                ", typeTransport=" + typeTransport +
-                ", prixAchat=" + prixAchat +
-                ", prixVente=" + prixVente +
-                ", dateVente=" + dateVente +
-                ", statutBillet=" + statutBillet +
-                '}';
-    }
-
-}
-
- */
-
-
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Duration;
-
-
-
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.UUID;
 
 public class Billet {
     private UUID id;
-    private UUID contratId;
     private TypeTransport typeTransport;
     private BigDecimal prixAchat;
     private BigDecimal prixVente;
-    private LocalDate dateVente;
+    private Timestamp dateVente;
     private StatutBillet statutBillet;
-    private String villeDepart;
-    private String villeDestination;
-    private LocalDate dateDepart;
-    private LocalTime horaire;
-    private Duration duree;
+    private UUID contratId;
+    private int trajetId;
+    private java.sql.Date dateDepart;
+    private java.sql.Time horaire;
 
-    // Constructeur
-    public Billet(UUID id, UUID contratId, TypeTransport typeTransport, BigDecimal prixAchat, BigDecimal prixVente, LocalDate dateVente, StatutBillet statutBillet,
-                  String villeDepart, String villeDestination, LocalDate dateDepart, LocalTime horaire, Duration duree) {
+    // Constructeur complet
+    public Billet(UUID id, TypeTransport typeTransport, BigDecimal prixAchat, BigDecimal prixVente,
+                  Timestamp dateVente, StatutBillet statutBillet, UUID contratId, int trajetId,
+                  java.sql.Date dateDepart, java.sql.Time horaire) {
         this.id = id;
-        this.contratId = contratId;
         this.typeTransport = typeTransport;
         this.prixAchat = prixAchat;
         this.prixVente = prixVente;
         this.dateVente = dateVente;
         this.statutBillet = statutBillet;
-        this.villeDepart = villeDepart;
-        this.villeDestination = villeDestination;
+        this.contratId = contratId;
+        this.trajetId = trajetId;
         this.dateDepart = dateDepart;
         this.horaire = horaire;
-        this.duree = duree;
     }
 
-    // Getters
+    // Getters et Setters
     public UUID getId() {
         return id;
     }
 
     public void setId(UUID id) {
         this.id = id;
-    }
-
-    public UUID getContratId() {
-        return contratId;
-    }
-
-    public void setContratId(UUID contratId) {
-        this.contratId = contratId;
     }
 
     public TypeTransport getTypeTransport() {
@@ -185,11 +66,11 @@ public class Billet {
         this.prixVente = prixVente;
     }
 
-    public LocalDate getDateVente() {
+    public Timestamp getDateVente() {
         return dateVente;
     }
 
-    public void setDateVente(LocalDate dateVente) {
+    public void setDateVente(Timestamp dateVente) {
         this.dateVente = dateVente;
     }
 
@@ -201,64 +82,52 @@ public class Billet {
         this.statutBillet = statutBillet;
     }
 
-    public String getVilleDepart() {
-        return villeDepart;
+    public UUID getContratId() {
+        return contratId;
     }
 
-    public void setVilleDepart(String villeDepart) {
-        this.villeDepart = villeDepart;
+    public void setContratId(UUID contratId) {
+        this.contratId = contratId;
     }
 
-    public String getVilleDestination() {
-        return villeDestination;
+    public int getTrajetId() {
+        return trajetId;
     }
 
-    public void setVilleDestination(String villeDestination) {
-        this.villeDestination = villeDestination;
+    public void setTrajetId(int trajetId) {
+        this.trajetId = trajetId;
     }
 
-    public LocalDate getDateDepart() {
+    public java.sql.Date getDateDepart() {
         return dateDepart;
     }
 
-    public void setDateDepart(LocalDate dateDepart) {
+    public void setDateDepart(java.sql.Date dateDepart) {
         this.dateDepart = dateDepart;
     }
 
-    public LocalTime getHoraire() {
+    public java.sql.Time getHoraire() {
         return horaire;
     }
 
-    public void setHoraire(LocalTime horaire) {
+    public void setHoraire(java.sql.Time horaire) {
         this.horaire = horaire;
     }
 
-    public Duration getDuree() {
-        return duree;
-    }
-
-    public void setDuree(Duration duree) {
-        this.duree = duree;
-    }
-
-    // Méthode toString
+    // Méthode toString pour afficher les informations du billet
     @Override
     public String toString() {
         return "Billet{" +
                 "id=" + id +
-                ", contratId=" + contratId +
                 ", typeTransport=" + typeTransport +
                 ", prixAchat=" + prixAchat +
                 ", prixVente=" + prixVente +
                 ", dateVente=" + dateVente +
                 ", statutBillet=" + statutBillet +
-                ", villeDepart='" + villeDepart + '\'' +
-                ", villeDestination='" + villeDestination + '\'' +
+                ", contratId=" + contratId +
+                ", trajetId=" + trajetId +
                 ", dateDepart=" + dateDepart +
                 ", horaire=" + horaire +
-                ", duree=" + duree +
                 '}';
     }
 }
-
-

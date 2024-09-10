@@ -2,40 +2,41 @@ package service;
 
 import dao.ReservationDAO;
 import model.Reservation;
+import service.interfaces.IReservationService;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class ReservationService {
+public class ReservationService implements IReservationService {
     private final ReservationDAO reservationDAO = new ReservationDAO();
 
-    // Ajouter une nouvelle réservation
+    @Override
     public void addReservation(Reservation reservation) {
         reservationDAO.addReservation(reservation);
     }
 
-    // Trouver une réservation par son ID
+    @Override
     public Optional<Reservation> getReservationById(UUID id) {
         return reservationDAO.findReservationById(id);
     }
 
-    // Obtenir toutes les réservations
+    @Override
     public List<Reservation> getAllReservations() {
         return reservationDAO.getAllReservations();
     }
 
-    // Mettre à jour une réservation
+    @Override
     public void updateReservation(Reservation reservation) {
         reservationDAO.updateReservation(reservation);
     }
 
-    // Supprimer une réservation par son ID
+    @Override
     public boolean deleteReservation(UUID id) {
         return reservationDAO.deleteReservation(id);
     }
 
-    // Ajouter la méthode getReservationsByClientId
+    @Override
     public List<Reservation> getReservationsByClientId(UUID clientId) {
         return reservationDAO.findReservationsByClientId(clientId);
     }

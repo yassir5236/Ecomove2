@@ -1,6 +1,8 @@
 package dao;
 
-import model.*;
+import dao.interfaces.IContratDAO;
+import model.Contrat;
+import model.StatutContrat;
 import util.DatabaseConnection;
 
 import java.sql.*;
@@ -8,18 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-
-
-public class ContratDAO {
+public class ContratDAO implements IContratDAO {
     private final Connection connection = DatabaseConnection.getConnection();
 
+    @Override
     public void addContrat(Contrat contrat) {
         String query = "INSERT INTO contrat (id, date_debut, date_fin, tarif_special, conditions_accord, renouvelable, statut_contrat, partenaire_id) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?::statut_contrat, ?)";
 
-        try (
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setObject(1, contrat.getId());
             statement.setDate(2, new Date(contrat.getDateDebut().getTime()));
 
@@ -41,13 +40,12 @@ public class ContratDAO {
         }
     }
 
-
+    @Override
     public List<Contrat> getAllContrats() {
         List<Contrat> contrats = new ArrayList<>();
         String query = "SELECT * FROM contrat";
 
-        try (
-             Statement statement = connection.createStatement();
+        try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
@@ -76,14 +74,12 @@ public class ContratDAO {
         return contrats;
     }
 
-
+    @Override
     public Contrat getContratById(UUID id) {
         Contrat contrat = null;
         String query = "SELECT * FROM contrat WHERE id = ?";
 
-        try (
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setObject(1, id);
             ResultSet resultSet = statement.executeQuery();
 
@@ -98,11 +94,6 @@ public class ContratDAO {
                 );
                 contrat.setId(id);
             }
-
-
-
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -110,14 +101,18 @@ public class ContratDAO {
         return contrat;
     }
 
+    @Override
     public void updateContrat(Contrat contrat) {
-        String query = "UPDATE contrat SET date_debut = ?, date_fin = ?, tarif_special = ?, conditions_accord = ?, renouvelable = ?, statut_contrat = CAST(? AS statut_contrat) WHERE id = ?";
+        String query = "UPDATE contrat SET date_debut = ?, date_fin = ?, tarif_special = ?, conditions_accord = ?, renouvelable = ?, " +
+                "statut_contrat = CAST(? AS statut_contrat) WHERE id = ?";
 
-        try (
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
-            statement.setDate(1, new Date(contrat.getDateDebut().getTime())); // Conversion correcte
-            statement.setDate(2, new Date(contrat.getDateFin().getTime())); // Conversion correcte
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setDate(1, new Date(contrat.getDateDebut().getTime()));
+            if (contrat.getDateFin() != null) {
+                statement.setDate(2, new Date(contrat.getDateFin().getTime()));
+            } else {
+                statement.setNull(2, Types.DATE);
+            }
             statement.setBigDecimal(3, contrat.getTarifSpecial());
             statement.setString(4, contrat.getConditionsAccord());
             statement.setBoolean(5, contrat.isRenouvelable());
@@ -130,12 +125,11 @@ public class ContratDAO {
         }
     }
 
+    @Override
     public void deleteContrat(UUID id) {
         String query = "DELETE FROM contrat WHERE id = ?";
 
-        try (
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setObject(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {

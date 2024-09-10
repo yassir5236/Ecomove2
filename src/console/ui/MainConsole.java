@@ -110,7 +110,7 @@ public class MainConsole {
 
             traiterChoix(choix);
 
-        } while (choix != 5);
+        } while (choix != 7);
 
         scanner.close();
     }
