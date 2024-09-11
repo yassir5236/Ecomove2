@@ -1,13 +1,17 @@
 package console.commands;
 
+import model.Billet;
 import model.Client;
+import service.BilletService;
 import service.ClientService;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class ClientCommands {
     private final ClientService clientService = new ClientService();
+    private final BilletService billetService = new BilletService();
 
     // Enregistrement d'un nouveau client
     public void addClient(Scanner scanner) {
@@ -69,4 +73,28 @@ public class ClientCommands {
         // Appel à la méthode de ClientService qui renvoie un boolean
         return clientService.updateClient(client);
     }
+
+
+    public void searchBillets(String villeDepart, String villeDestination, String dateDepart) {
+        List<Billet> billets = billetService.searchBillets(villeDepart, villeDestination, dateDepart);
+
+        if (billets.isEmpty()) {
+            System.out.println("Aucun billet trouvé pour les critères spécifiés.");
+        } else {
+            System.out.println("Billets trouvés :");
+            for (Billet billet : billets) {
+                System.out.println("ID: " + billet.getId());
+                System.out.println("Type de transport: " + billet.getTypeTransport());
+                System.out.println("Prix d'achat: " + billet.getPrixAchat());
+                System.out.println("Prix de vente: " + billet.getPrixVente());
+                System.out.println("Date de vente: " + billet.getDateVente());
+                System.out.println("Statut du billet: " + billet.getStatutBillet());
+                System.out.println("Date de départ: " + billet.getDateDepart());
+                System.out.println("Horaire: " + billet.getHoraire());
+                System.out.println("---");
+            }
+        }
+    }
+
+
 }

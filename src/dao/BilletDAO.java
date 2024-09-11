@@ -139,38 +139,79 @@ public class BilletDAO implements IBilletDAO {
         }
     }
 
+//    @Override
+//    public List<Billet> searchBillets(String villeDepart, String villeDestination, String dateDepart) {
+//        List<Billet> billets = new ArrayList<>();
+//        String sql = "SELECT * FROM billet WHERE ville_depart = ? AND ville_destination = ? AND date_depart = ?";
+//
+//        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+//            pstmt.setString(1, villeDepart);
+//            pstmt.setString(2, villeDestination);
+//            pstmt.setDate(3, Date.valueOf(LocalDate.parse(dateDepart))); // Conversion de LocalDate en Date
+//
+//            ResultSet rs = pstmt.executeQuery();
+//
+//            while (rs.next()) {
+//                UUID id = UUID.fromString(rs.getString("id"));
+//                UUID contratId = UUID.fromString(rs.getString("contrat_id"));
+//                int trajetId = rs.getInt("trajet_id");
+//                TypeTransport typeTransport = TypeTransport.valueOf(rs.getString("type_transport"));
+//                BigDecimal prixAchat = rs.getBigDecimal("prix_achat");
+//                BigDecimal prixVente = rs.getBigDecimal("prix_vente");
+//                Timestamp dateVente = rs.getTimestamp("date_vente");
+//                StatutBillet statutBillet = StatutBillet.valueOf(rs.getString("statut_billet"));
+//                java.sql.Date dateDepartDb = rs.getDate("date_depart");
+//                java.sql.Time horaire = rs.getTime("horaire");
+//
+//                Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, dateDepartDb, horaire);
+//                billets.add(billet);
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return billets;
+//    }
+
+
     @Override
     public List<Billet> searchBillets(String villeDepart, String villeDestination, String dateDepart) {
         List<Billet> billets = new ArrayList<>();
-        String sql = "SELECT * FROM billet WHERE ville_depart = ? AND ville_destination = ? AND date_depart = ?";
+        String sql = "SELECT b.* FROM billet b " +
+                "JOIN trajet t ON b.trajet_id = t.id " +
+                "JOIN ville v_depart ON t.ville_depart_id = v_depart.id " +
+                "JOIN ville v_destination ON t.ville_destination_id = v_destination.id " +
+                "WHERE v_depart.nom = ? AND v_destination.nom = ? AND b.date_depart = ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, villeDepart);
             pstmt.setString(2, villeDestination);
-            pstmt.setDate(3, Date.valueOf(LocalDate.parse(dateDepart))); // Conversion de LocalDate en Date
+            pstmt.setDate(3, Date.valueOf(LocalDate.parse(dateDepart)));
 
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {
-                UUID id = UUID.fromString(rs.getString("id"));
-                UUID contratId = UUID.fromString(rs.getString("contrat_id"));
-                int trajetId = rs.getInt("trajet_id");
-                TypeTransport typeTransport = TypeTransport.valueOf(rs.getString("type_transport"));
-                BigDecimal prixAchat = rs.getBigDecimal("prix_achat");
-                BigDecimal prixVente = rs.getBigDecimal("prix_vente");
-                Timestamp dateVente = rs.getTimestamp("date_vente");
-                StatutBillet statutBillet = StatutBillet.valueOf(rs.getString("statut_billet"));
-                java.sql.Date dateDepartDb = rs.getDate("date_depart");
-                java.sql.Time horaire = rs.getTime("horaire");
-
-                Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, dateDepartDb, horaire);
+                // Récupération des informations du billet
+                Billet billet = new Billet(
+                        UUID.fromString(rs.getString("id")),
+                        TypeTransport.valueOf(rs.getString("type_transport").toUpperCase()),  // Convertir en majuscules
+                        rs.getBigDecimal("prix_achat"),
+                        rs.getBigDecimal("prix_vente"),
+                        rs.getTimestamp("date_vente"),
+                        StatutBillet.valueOf(rs.getString("statut_billet").toUpperCase()),
+                        UUID.fromString(rs.getString("contrat_id")),
+                        rs.getInt("trajet_id"),
+                        rs.getDate("date_depart"),
+                        rs.getTime("horaire")
+                );
                 billets.add(billet);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
         return billets;
     }
+
 }

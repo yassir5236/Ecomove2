@@ -1,5 +1,6 @@
 package console.ui;
 
+import console.commands.BilletCommands;
 import console.commands.ClientCommands;
 import model.Client;
 
@@ -7,6 +8,7 @@ import java.util.Scanner;
 
 public class ClientUI {
     private final ClientCommands clientCommands = new ClientCommands();
+    private final BilletCommands billetCommands = new BilletCommands(); // On ajoute BilletCommands pour la recherche des billets
 
     public void start(Scanner scanner) {
         boolean running = true;
@@ -14,7 +16,8 @@ public class ClientUI {
         while (running) {
             System.out.println("=== Menu Client ===");
             System.out.println("1. Gérer votre compte");
-            System.out.println("2. Retour au menu principal");
+            System.out.println("2. Recherche de billets");
+            System.out.println("3. Retour au menu principal");
             System.out.print("Choisissez une option : ");
 
             if (scanner.hasNextInt()) {
@@ -26,6 +29,9 @@ public class ClientUI {
                         handleAccountManagement(scanner);
                         break;
                     case 2:
+                        handleSearchBillet(scanner);  // Ajoute cette méthode
+                        break;
+                    case 3:
                         running = false;
                         break;
                     default:
@@ -102,4 +108,23 @@ public class ClientUI {
             scanner.nextLine();  // Consomme l'entrée invalide
         }
     }
+
+
+    private void handleSearchBillet(Scanner scanner) {
+        System.out.println("=== Recherche de Billets ===");
+
+        System.out.println("Entrez la ville de départ :");
+        String villeDepart = scanner.nextLine().trim();
+
+        System.out.println("Entrez la ville de destination :");
+        String villeDestination = scanner.nextLine().trim();
+
+        System.out.println("Entrez la date de départ (format YYYY-MM-DD) :");
+        String dateDepart = scanner.nextLine().trim();
+
+        // Recherche des billets
+        clientCommands.searchBillets(villeDepart, villeDestination, dateDepart);
+    }
+
+
 }
