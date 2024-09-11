@@ -6,9 +6,16 @@ public class Trajet {
     private int villeDestinationId;
     private double duree; // Durée en heures
 
-    // Constructeur complet
+    // Constructeur avec ID
     public Trajet(int id, int villeDepartId, int villeDestinationId, double duree) {
         this.id = id;
+        this.villeDepartId = villeDepartId;
+        this.villeDestinationId = villeDestinationId;
+        this.duree = duree;
+    }
+
+    // Constructeur sans ID
+    public Trajet(int villeDepartId, int villeDestinationId, double duree) {
         this.villeDepartId = villeDepartId;
         this.villeDestinationId = villeDestinationId;
         this.duree = duree;

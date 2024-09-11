@@ -4,35 +4,34 @@ package dao;
 
 import dao.interfaces.ITrajetDAO;
 import model.Trajet;
+import util.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TrajetDAO implements ITrajetDAO {
-    private final Connection connection;
+    private final Connection connection ;
 
     public TrajetDAO() {
-        // Assurez-vous de remplacer les paramètres par ceux de votre base de données
-        String url = "jdbc:postgresql://localhost:5432/your_database";
-        String user = "your_username";
-        String password = "your_password";
-        try {
-            this.connection = DriverManager.getConnection(url, user, password);
-        } catch (SQLException e) {
-            throw new RuntimeException("Erreur de connexion à la base de données", e);
-        }
+        this.connection = DatabaseConnection.getConnection();
     }
 
     @Override
     public void addTrajet(Trajet trajet) {
-        String query = "INSERT INTO trajet (id, ville_depart_id, ville_destination_id, duree) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setInt(1, trajet.getId());
-            stmt.setInt(2, trajet.getVilleDepartId());
-            stmt.setInt(3, trajet.getVilleDestinationId());
-            stmt.setDouble(4, trajet.getDuree());
+        String query = "INSERT INTO trajet (ville_depart_id, ville_destination_id, duree) VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+            stmt.setInt(1, trajet.getVilleDepartId());
+            stmt.setInt(2, trajet.getVilleDestinationId());
+            stmt.setDouble(3, trajet.getDuree());
             stmt.executeUpdate();
+
+            // Récupérer l'ID généré
+            try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    trajet.setId(generatedKeys.getInt(1)); // Assigner l'ID généré au trajet
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de l'ajout du trajet", e);
         }
@@ -57,7 +56,6 @@ public class TrajetDAO implements ITrajetDAO {
             throw new RuntimeException("Erreur lors de la récupération du trajet", e);
         }
     }
-
     @Override
     public List<Trajet> getAllTrajets() {
         String query = "SELECT * FROM trajet";
@@ -77,7 +75,6 @@ public class TrajetDAO implements ITrajetDAO {
         }
         return trajets;
     }
-
     @Override
     public void updateTrajet(Trajet trajet) {
         String query = "UPDATE trajet SET ville_depart_id = ?, ville_destination_id = ?, duree = ? WHERE id = ?";
