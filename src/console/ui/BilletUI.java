@@ -24,8 +24,12 @@ public class BilletUI {
             System.out.println("4. Supprimer un billet");
             System.out.println("5. Quitter");
             System.out.print("Choisissez une option : ");
+            while (!scanner.hasNextInt()) {
+                System.out.println("Veuillez entrer un nombre valide.");
+                scanner.next(); // Consomme l'entrée incorrecte
+            }
             choix = scanner.nextInt();
-            scanner.nextLine();
+            scanner.nextLine(); // Consomme la nouvelle ligne après l'entrée
 
             switch (choix) {
                 case 1:
@@ -40,16 +44,14 @@ public class BilletUI {
                 case 4:
                     billetCommands.supprimerBillet();
                     break;
-
                 case 5:
                     System.out.println("Au revoir!");
-                    return;
-                    //break;
+                    break;
                 default:
                     System.out.println("Option invalide. Essayez encore.");
                     break;
             }
-        } while (choix != 6);
+        } while (choix != 5);
 
         scanner.close();
     }

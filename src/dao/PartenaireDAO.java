@@ -12,7 +12,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class PartenaireDAO implements IPartenaireDAO {
-    private final Connection conn = DatabaseConnection.getConnection();
+    private final Connection conn ;
+
+    public PartenaireDAO() {
+        this.conn = DatabaseConnection.getConnection();
+    }
 
     @Override
     public void ajouterPartenaire(Partenaire partenaire) {

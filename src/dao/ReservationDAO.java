@@ -11,8 +11,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ReservationDAO implements IReservationDAO {
-    private final Connection connection = DatabaseConnection.getConnection();
+    private final Connection connection ;
 
+    public ReservationDAO() {
+        this.connection = DatabaseConnection.getConnection();
+    }
     @Override
     public boolean addReservation(Reservation reservation) {
         String sql = "INSERT INTO reservations (id, client_id, billet_id, date_reservation) VALUES (?, ?, ?, ?)";

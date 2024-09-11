@@ -1,37 +1,32 @@
 package console.commands;
 
-import dao.BilletDAO;
 import model.Billet;
 import model.TypeTransport;
 import model.StatutBillet;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Scanner;
+import service.BilletService;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.sql.Date;
-import java.util.List;
-import java.util.UUID;
-
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Duration;
-
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
 
 public class BilletCommands {
 
-    private final BilletDAO billetDAO;
+    private final BilletService billetService;
 
     public BilletCommands() {
-        this.billetDAO = new BilletDAO();
+        this.billetService = new BilletService(); // Utilisation du service BilletService
     }
 
-
-
-
-
+    // Méthode pour ajouter un billet
     public void ajouterBillet() {
         System.out.println("=== Ajouter un billet ===");
         Scanner scanner = new Scanner(System.in);
@@ -42,8 +37,7 @@ public class BilletCommands {
         while (contratId == null) {
             try {
                 System.out.print("Entrez l'ID du contrat associé : ");
-                String contratIdStr = scanner.nextLine();
-                contratId = UUID.fromString(contratIdStr);
+                contratId = UUID.fromString(scanner.nextLine());
             } catch (IllegalArgumentException e) {
                 System.out.println("ID du contrat invalide. Veuillez entrer un UUID valide.");
             }
@@ -79,18 +73,14 @@ public class BilletCommands {
             }
         }
 
-        LocalDate dateVente = null;
+        Timestamp dateVente = null;
         while (dateVente == null) {
             try {
-                System.out.print("Date de vente (YYYY-MM-DD) : ");
+                System.out.print("Date de vente (YYYY-MM-DD HH:MM) : ");
                 String dateVenteInput = scanner.nextLine();
-                dateVente = LocalDate.parse(dateVenteInput, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                if (dateVente.isBefore(LocalDate.now())) {
-                    System.out.println("La date de vente ne peut pas être antérieure à la date actuelle. Veuillez réessayer.");
-                    dateVente = null;
-                }
+                dateVente = Timestamp.valueOf(LocalDateTime.parse(dateVenteInput, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             } catch (DateTimeParseException e) {
-                System.out.println("Erreur : Le format de la date est incorrect. Veuillez entrer une date au format YYYY-MM-DD.");
+                System.out.println("Erreur : Le format de la date est incorrect. Veuillez entrer une date au format YYYY-MM-DD HH:MM.");
             }
         }
 
@@ -104,24 +94,14 @@ public class BilletCommands {
             }
         }
 
-        String villeDepart = "";
-        while (villeDepart.isEmpty()) {
-            System.out.print("Ville de départ : ");
-            villeDepart = scanner.nextLine();
-        }
-
-        String villeDestination = "";
-        while (villeDestination.isEmpty()) {
-            System.out.print("Ville de destination : ");
-            villeDestination = scanner.nextLine();
-        }
+        System.out.print("Trajet ID : ");
+        int trajetId = Integer.parseInt(scanner.nextLine());
 
         LocalDate dateDepart = null;
         while (dateDepart == null) {
             try {
                 System.out.print("Date de départ (YYYY-MM-DD) : ");
-                String dateDepartInput = scanner.nextLine();
-                dateDepart = LocalDate.parse(dateDepartInput, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                dateDepart = LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             } catch (DateTimeParseException e) {
                 System.out.println("Erreur : Le format de la date est incorrect. Veuillez entrer une date au format YYYY-MM-DD.");
             }
@@ -131,42 +111,28 @@ public class BilletCommands {
         while (horaire == null) {
             try {
                 System.out.print("Horaire (HH:MM) : ");
-                String horaireInput = scanner.nextLine();
-                horaire = LocalTime.parse(horaireInput, DateTimeFormatter.ofPattern("HH:mm"));
+                horaire = LocalTime.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("HH:mm"));
             } catch (DateTimeParseException e) {
                 System.out.println("Erreur : Le format de l'heure est incorrect. Veuillez entrer une heure au format HH:MM.");
             }
         }
 
-        Duration duree = null;
-        while (duree == null) {
-            try {
-                System.out.print("Durée (en heures) : ");
-                String dureeInput = scanner.nextLine();
-                duree = Duration.ofHours(Long.parseLong(dureeInput));
-            } catch (NumberFormatException e) {
-                System.out.println("Durée invalide. Veuillez entrer une durée en heures.");
-            }
-        }
-
-        Billet billet = new Billet(id, contratId, typeTransport, prixAchat, prixVente, dateVente, statutBillet, villeDepart, villeDestination, dateDepart, horaire, duree);
-        billetDAO.addBillet(billet);
+        Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, Date.valueOf(dateDepart), Time.valueOf(horaire));
+        billetService.addBillet(billet);
 
         System.out.println("Billet ajouté avec succès!");
     }
 
-
-
-
+    // Méthode pour afficher tous les billets
     public void afficherTousLesBillets() {
-        List<Billet> billets = billetDAO.getAllBillets();
+        List<Billet> billets = billetService.getAllBillets();
         System.out.println("=== Liste des billets ===");
         for (Billet billet : billets) {
             System.out.println(billet);
         }
     }
 
-
+    // Méthode pour mettre à jour un billet
     public void mettreAJourBillet() {
         System.out.println("=== Mettre à jour un billet ===");
         Scanner scanner = new Scanner(System.in);
@@ -181,12 +147,17 @@ public class BilletCommands {
             }
         }
 
+        Billet billetExist = billetService.getBilletById(id);
+        if (billetExist == null) {
+            System.out.println("Aucun billet trouvé avec cet ID.");
+            return;
+        }
+
         UUID contratId = null;
         while (contratId == null) {
             try {
                 System.out.print("Entrez l'ID du contrat associé : ");
-                String contratIdStr = scanner.nextLine();
-                contratId = UUID.fromString(contratIdStr);
+                contratId = UUID.fromString(scanner.nextLine());
             } catch (IllegalArgumentException e) {
                 System.out.println("ID du contrat invalide. Veuillez entrer un UUID valide.");
             }
@@ -222,18 +193,13 @@ public class BilletCommands {
             }
         }
 
-        LocalDate dateVente = null;
+        Timestamp dateVente = null;
         while (dateVente == null) {
             try {
-                System.out.print("Nouvelle date de vente (YYYY-MM-DD) : ");
-                String dateVenteInput = scanner.nextLine();
-                dateVente = LocalDate.parse(dateVenteInput, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                if (dateVente.isBefore(LocalDate.now())) {
-                    System.out.println("La date de vente ne peut pas être antérieure à la date actuelle. Veuillez réessayer.");
-                    dateVente = null;
-                }
+                System.out.print("Nouvelle date de vente (YYYY-MM-DD HH:MM) : ");
+                dateVente = Timestamp.valueOf(LocalDateTime.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             } catch (DateTimeParseException e) {
-                System.out.println("Erreur : Le format de la date est incorrect. Veuillez entrer une date au format YYYY-MM-DD.");
+                System.out.println("Erreur : Le format de la date est incorrect. Veuillez entrer une date au format YYYY-MM-DD HH:MM.");
             }
         }
 
@@ -247,24 +213,14 @@ public class BilletCommands {
             }
         }
 
-        String villeDepart = "";
-        while (villeDepart.isEmpty()) {
-            System.out.print("Nouvelle ville de départ : ");
-            villeDepart = scanner.nextLine();
-        }
-
-        String villeDestination = "";
-        while (villeDestination.isEmpty()) {
-            System.out.print("Nouvelle ville de destination : ");
-            villeDestination = scanner.nextLine();
-        }
+        System.out.print("Nouveau trajet ID : ");
+        int trajetId = Integer.parseInt(scanner.nextLine());
 
         LocalDate dateDepart = null;
         while (dateDepart == null) {
             try {
                 System.out.print("Nouvelle date de départ (YYYY-MM-DD) : ");
-                String dateDepartInput = scanner.nextLine();
-                dateDepart = LocalDate.parse(dateDepartInput, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                dateDepart = LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             } catch (DateTimeParseException e) {
                 System.out.println("Erreur : Le format de la date est incorrect. Veuillez entrer une date au format YYYY-MM-DD.");
             }
@@ -274,43 +230,55 @@ public class BilletCommands {
         while (horaire == null) {
             try {
                 System.out.print("Nouvel horaire (HH:MM) : ");
-                String horaireInput = scanner.nextLine();
-                horaire = LocalTime.parse(horaireInput, DateTimeFormatter.ofPattern("HH:mm"));
+                horaire = LocalTime.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("HH:mm"));
             } catch (DateTimeParseException e) {
                 System.out.println("Erreur : Le format de l'heure est incorrect. Veuillez entrer une heure au format HH:MM.");
             }
         }
 
-        Duration duree = null;
-        while (duree == null) {
-            try {
-                System.out.print("Nouvelle durée (en heures) : ");
-                String dureeInput = scanner.nextLine();
-                duree = Duration.ofHours(Long.parseLong(dureeInput));
-            } catch (NumberFormatException e) {
-                System.out.println("Durée invalide. Veuillez entrer une durée en heures.");
-            }
-        }
-
-        Billet billet = new Billet(id, contratId, typeTransport, prixAchat, prixVente, dateVente, statutBillet, villeDepart, villeDestination, dateDepart, horaire, duree);
-        billetDAO.updateBillet(billet);
+        Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, Date.valueOf(dateDepart), Time.valueOf(horaire));
+        billetService.updateBillet(billet);
 
         System.out.println("Billet mis à jour avec succès!");
     }
 
-
+    // Méthode pour supprimer un billet
     public void supprimerBillet() {
+        System.out.println("=== Supprimer un billet ===");
         Scanner scanner = new Scanner(System.in);
 
-        System.out.print("ID du billet à supprimer (UUID) : ");
-        UUID id = UUID.fromString(scanner.nextLine());
+        UUID id = null;
+        while (id == null) {
+            try {
+                System.out.print("Entrez l'ID du billet à supprimer (UUID) : ");
+                id = UUID.fromString(scanner.nextLine());
+            } catch (IllegalArgumentException e) {
+                System.out.println("ID de billet invalide. Veuillez entrer un UUID valide.");
+            }
+        }
 
-        billetDAO.deleteBillet(id);
-
+        billetService.deleteBillet(id); // Appel du service pour supprimer le billet
         System.out.println("Billet supprimé avec succès!");
     }
+
+    // Méthode pour rechercher des billets
+    public void rechercherBillets() {
+        System.out.println("=== Rechercher des billets ===");
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Ville de départ : ");
+        String villeDepart = scanner.nextLine();
+
+        System.out.print("Ville de destination : ");
+        String villeDestination = scanner.nextLine();
+
+        System.out.print("Date de départ (YYYY-MM-DD) : ");
+        String dateDepart = scanner.nextLine();
+
+        List<Billet> billets = billetService.searchBillets(villeDepart, villeDestination, dateDepart);
+        System.out.println("=== Résultats de la recherche ===");
+        for (Billet billet : billets) {
+            System.out.println(billet);
+        }
+    }
 }
-
-
-
-

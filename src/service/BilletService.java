@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.UUID;
 
 public class BilletService implements IBilletService {
-    private final BilletDAO billetDAO = new BilletDAO();
+    private final BilletDAO billetDAO;
+    public BilletService() {
+        this.billetDAO = new BilletDAO();
+    }
 
     @Override
     public void addBillet(Billet billet) {

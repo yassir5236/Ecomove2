@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class ContratDAO implements IContratDAO {
-    private final Connection connection = DatabaseConnection.getConnection();
+    private final Connection connection ;
+
+    public ContratDAO() {
+        this.connection = DatabaseConnection.getConnection();
+    }
 
     @Override
     public void addContrat(Contrat contrat) {

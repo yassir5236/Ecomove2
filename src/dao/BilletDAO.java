@@ -16,7 +16,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class BilletDAO implements IBilletDAO {
-    private final Connection connection = DatabaseConnection.getConnection();
+    private final Connection connection ;
+
+    public BilletDAO() {
+        this.connection = DatabaseConnection.getConnection();
+    }
 
     @Override
     public void addBillet(Billet billet) {

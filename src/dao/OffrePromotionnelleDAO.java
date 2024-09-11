@@ -12,9 +12,11 @@ import java.util.List;
 import java.util.UUID;
 
 public class OffrePromotionnelleDAO implements IOffrePromotionnelleDAO {
+    private final Connection connection ;
 
-    private final Connection connection = DatabaseConnection.getConnection();
-
+    public OffrePromotionnelleDAO() {
+        this.connection = DatabaseConnection.getConnection();
+    }
     @Override
     public void addOffrePromotionnelle(OffrePromotionnelle offre) {
         String query = "INSERT INTO offre_promotionnelle (id, nom_offre, description, date_debut, date_fin, type_reduction, " +

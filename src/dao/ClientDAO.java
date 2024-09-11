@@ -204,8 +204,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class ClientDAO implements IClientDAO {
-    private final Connection connection = DatabaseConnection.getConnection();
+    private final Connection connection ;
 
+    public ClientDAO() {
+        this.connection = DatabaseConnection.getConnection();
+    }
     @Override
     public boolean addClient(Client client) {
         String sql = "INSERT INTO client (id, nom, prenom, email, telephone) VALUES (?, ?, ?, ?, ?)";
