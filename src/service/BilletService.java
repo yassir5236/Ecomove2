@@ -4,6 +4,7 @@ import dao.BilletDAO;
 import model.Billet;
 import service.interfaces.IBilletService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,8 +39,9 @@ public class BilletService implements IBilletService {
         billetDAO.deleteBillet(id);
     }
 
+
     @Override
-    public List<Billet> searchBillets(String villeDepart, String villeDestination, String dateDepart) {
+    public List<Billet> searchBillets(String villeDepart, String villeDestination, LocalDate dateDepart) {
         return billetDAO.searchBillets(villeDepart, villeDestination, dateDepart);
     }
 }

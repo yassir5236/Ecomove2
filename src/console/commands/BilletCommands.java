@@ -4,7 +4,11 @@ import model.Billet;
 import model.TypeTransport;
 import model.StatutBillet;
 import service.BilletService;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Scanner;
+import java.util.List;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.sql.Date;
@@ -117,7 +121,7 @@ public class BilletCommands {
             }
         }
 
-        Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, Date.valueOf(dateDepart), Time.valueOf(horaire));
+        Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, Date.valueOf(dateDepart), Time.valueOf(horaire) , null,null,null,null);
         billetService.addBillet(billet);
 
         System.out.println("Billet ajouté avec succès!");
@@ -236,7 +240,7 @@ public class BilletCommands {
             }
         }
 
-        Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, Date.valueOf(dateDepart), Time.valueOf(horaire));
+        Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, Date.valueOf(dateDepart), Time.valueOf(horaire),null,null,null,null);
         billetService.updateBillet(billet);
 
         System.out.println("Billet mis à jour avec succès!");
@@ -273,7 +277,17 @@ public class BilletCommands {
         String villeDestination = scanner.nextLine();
 
         System.out.print("Date de départ (YYYY-MM-DD) : ");
-        String dateDepart = scanner.nextLine();
+        String dateDepartStr = scanner.nextLine();
+
+        // Convertir la chaîne en LocalDate
+        LocalDate dateDepart;
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            dateDepart = LocalDate.parse(dateDepartStr, formatter);
+        } catch (DateTimeParseException e) {
+            System.out.println("Format de date invalide. Utilisez YYYY-MM-DD.");
+            return; // Sortir de la méthode si la date est invalide
+        }
 
         List<Billet> billets = billetService.searchBillets(villeDepart, villeDestination, dateDepart);
         System.out.println("=== Résultats de la recherche ===");

@@ -17,10 +17,33 @@ public class Billet {
     private java.sql.Date dateDepart;
     private java.sql.Time horaire;
 
+    // Nouveaux attributs
+    private BigDecimal duree;
+    private String nomCompagnie;
+    private String villeDepart;
+    private String villeDestination;
+
     // Constructeur complet
+//    public Billet(UUID id, TypeTransport typeTransport, BigDecimal prixAchat, BigDecimal prixVente,
+//                  Timestamp dateVente, StatutBillet statutBillet, UUID contratId, int trajetId,
+//                  java.sql.Date dateDepart, java.sql.Time horaire) {
+//        this.id = id;
+//        this.typeTransport = typeTransport;
+//        this.prixAchat = prixAchat;
+//        this.prixVente = prixVente;
+//        this.dateVente = dateVente;
+//        this.statutBillet = statutBillet;
+//        this.contratId = contratId;
+//        this.trajetId = trajetId;
+//        this.dateDepart = dateDepart;
+//        this.horaire = horaire;
+//    }
+
+
     public Billet(UUID id, TypeTransport typeTransport, BigDecimal prixAchat, BigDecimal prixVente,
                   Timestamp dateVente, StatutBillet statutBillet, UUID contratId, int trajetId,
-                  java.sql.Date dateDepart, java.sql.Time horaire) {
+                  java.sql.Date dateDepart, java.sql.Time horaire, BigDecimal duree,
+                  String nomCompagnie, String villeDepart, String villeDestination) {
         this.id = id;
         this.typeTransport = typeTransport;
         this.prixAchat = prixAchat;
@@ -31,6 +54,10 @@ public class Billet {
         this.trajetId = trajetId;
         this.dateDepart = dateDepart;
         this.horaire = horaire;
+        this.duree = duree;
+        this.nomCompagnie = nomCompagnie;
+        this.villeDepart = villeDepart;
+        this.villeDestination = villeDestination;
     }
 
     // Getters et Setters
@@ -112,6 +139,38 @@ public class Billet {
 
     public void setHoraire(java.sql.Time horaire) {
         this.horaire = horaire;
+    }
+
+    public BigDecimal getDuree() {
+        return duree;
+    }
+
+    public void setDuree(BigDecimal duree) {
+        this.duree = duree;
+    }
+
+    public String getNomCompagnie() {
+        return nomCompagnie;
+    }
+
+    public void setNomCompagnie(String nomCompagnie) {
+        this.nomCompagnie = nomCompagnie;
+    }
+
+    public String getVilleDepart() {
+        return villeDepart;
+    }
+
+    public void setVilleDepart(String villeDepart) {
+        this.villeDepart = villeDepart;
+    }
+
+    public String getVilleDestination() {
+        return villeDestination;
+    }
+
+    public void setVilleDestination(String villeDestination) {
+        this.villeDestination = villeDestination;
     }
 
     // Méthode toString pour afficher les informations du billet

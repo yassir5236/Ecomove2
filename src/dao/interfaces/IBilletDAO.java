@@ -1,6 +1,8 @@
 package dao.interfaces;
 
 import model.Billet;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,5 +24,5 @@ public interface IBilletDAO {
     void deleteBillet(UUID id);
 
     // Méthode pour rechercher des billets en fonction de la ville de départ, ville de destination, et la date de départ
-    List<Billet> searchBillets(String villeDepart, String villeDestination, String dateDepart);
+    List<Billet> searchBillets(String villeDepart, String villeDestination, LocalDate dateDepart);
 }

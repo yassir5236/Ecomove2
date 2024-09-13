@@ -2,152 +2,113 @@ package dao;
 
 import dao.interfaces.IReservationDAO;
 import model.Reservation;
-import util.DatabaseConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import util.DatabaseConnection;
+
 
 public class ReservationDAO implements IReservationDAO {
-    private final Connection connection ;
+    private final Connection connection;
 
     public ReservationDAO() {
+        // Assuming the connection is set up somewhere else, injected, or acquired through a utility class
         this.connection = DatabaseConnection.getConnection();
     }
-    @Override
-    public boolean addReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservations (id, client_id, billet_id, date_reservation) VALUES (?, ?, ?, ?)";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setObject(1, reservation.getId());
-            preparedStatement.setObject(2, reservation.getClientId());
-            preparedStatement.setObject(3, reservation.getBilletId());
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(reservation.getDateReservation()));
-
-            int affectedRows = preparedStatement.executeUpdate();
-            return affectedRows > 0;
-
-        } catch (SQLException e) {
-            System.out.println("Erreur lors de l'ajout de la réservation : " + e.getMessage());
-        }
-
-        return false;
-    }
 
     @Override
-    public Optional<Reservation> findReservationById(UUID reservationId) {
-        String sql = "SELECT * FROM reservations WHERE id = ?";
-        Reservation reservation = null;
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setObject(1, reservationId);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                reservation = new Reservation(
-                        (UUID) resultSet.getObject("id"),
-                        (UUID) resultSet.getObject("client_id"),
-                        (UUID) resultSet.getObject("billet_id"),
-                        resultSet.getTimestamp("date_reservation").toLocalDateTime()
-                );
-            }
-
+    public void addReservation(Reservation reservation) {
+        String sql = "INSERT INTO reservation (id, clientid, statut_reservation) VALUES (?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, reservation.getId());
+            ps.setObject(2, reservation.getClientId());
+            ps.setString(3, reservation.getStatutReservation());
+            ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la recherche de la réservation : " + e.getMessage());
+            e.printStackTrace();
         }
-
-        return Optional.ofNullable(reservation);
     }
 
     @Override
     public List<Reservation> getAllReservations() {
-        String sql = "SELECT * FROM reservations";
         List<Reservation> reservations = new ArrayList<>();
-
+        String sql = "SELECT * FROM reservation";
         try (Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(sql)) {
-
-            while (resultSet.next()) {
-                Reservation reservation = new Reservation(
-                        (UUID) resultSet.getObject("id"),
-                        (UUID) resultSet.getObject("client_id"),
-                        (UUID) resultSet.getObject("billet_id"),
-                        resultSet.getTimestamp("date_reservation").toLocalDateTime()
-                );
-                reservations.add(reservation);
+             ResultSet rs = statement.executeQuery(sql)) {
+            while (rs.next()) {
+                reservations.add(mapResultSetToReservation(rs));
             }
-
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la récupération des réservations : " + e.getMessage());
+            e.printStackTrace();
         }
-
         return reservations;
     }
 
     @Override
-    public boolean updateReservation(Reservation reservation) {
-        String sql = "UPDATE reservations SET client_id = ?, billet_id = ?, date_reservation = ? WHERE id = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setObject(1, reservation.getClientId());
-            preparedStatement.setObject(2, reservation.getBilletId());
-            preparedStatement.setTimestamp(3, Timestamp.valueOf(reservation.getDateReservation()));
-            preparedStatement.setObject(4, reservation.getId());
-
-            int affectedRows = preparedStatement.executeUpdate();
-            return affectedRows > 0;
-
+    public Optional<Reservation> getReservationById(UUID id) {
+        String sql = "SELECT * FROM reservation WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapResultSetToReservation(rs));
+                }
+            }
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la mise à jour de la réservation : " + e.getMessage());
+            e.printStackTrace();
         }
-
-        return false;
+        return Optional.empty();
     }
 
     @Override
-    public boolean deleteReservation(UUID reservationId) {
-        String sql = "DELETE FROM reservations WHERE id = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setObject(1, reservationId);
-
-            int affectedRows = preparedStatement.executeUpdate();
-            return affectedRows > 0;
-
+    public void updateReservation(Reservation reservation) {
+        String sql = "UPDATE reservation SET clientid = ?, statut_reservation = ? WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, reservation.getClientId());
+            ps.setString(2, reservation.getStatutReservation());
+            ps.setObject(3, reservation.getId());
+            ps.executeUpdate();
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression de la réservation : " + e.getMessage());
+            e.printStackTrace();
         }
-
-        return false;
     }
 
     @Override
-    public List<Reservation> findReservationsByClientId(UUID clientId) {
-        String sql = "SELECT * FROM reservations WHERE client_id = ?";
+    public void deleteReservation(UUID id) {
+        String sql = "DELETE FROM reservation WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<Reservation> searchReservationByStatut(String statutReservation) {
         List<Reservation> reservations = new ArrayList<>();
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-            preparedStatement.setObject(1, clientId);
-
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            while (resultSet.next()) {
-                Reservation reservation = new Reservation(
-                        (UUID) resultSet.getObject("id"),
-                        (UUID) resultSet.getObject("client_id"),
-                        (UUID) resultSet.getObject("billet_id"),
-                        resultSet.getTimestamp("date_reservation").toLocalDateTime()
-                );
-                reservations.add(reservation);
+        String sql = "SELECT * FROM reservation WHERE statut_reservation = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, statutReservation);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    reservations.add(mapResultSetToReservation(rs));
+                }
             }
-
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la recherche des réservations par ID de client : " + e.getMessage());
+            e.printStackTrace();
         }
-
         return reservations;
+    }
+
+    private Reservation mapResultSetToReservation(ResultSet rs) throws SQLException {
+        UUID id = UUID.fromString(rs.getString("id"));
+        UUID clientId = UUID.fromString(rs.getString("clientid"));
+        String statutReservation = rs.getString("statut_reservation");
+
+        return new Reservation(id, clientId, statutReservation);
     }
 }

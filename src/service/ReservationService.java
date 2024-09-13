@@ -17,13 +17,13 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public Optional<Reservation> getReservationById(UUID id) {
-        return reservationDAO.findReservationById(id);
+    public List<Reservation> getAllReservations() {
+        return reservationDAO.getAllReservations();
     }
 
     @Override
-    public List<Reservation> getAllReservations() {
-        return reservationDAO.getAllReservations();
+    public Optional<Reservation> getReservationById(UUID id) {
+        return reservationDAO.getReservationById(id);
     }
 
     @Override
@@ -32,12 +32,12 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public boolean deleteReservation(UUID id) {
-        return reservationDAO.deleteReservation(id);
+    public void deleteReservation(UUID id) {
+        reservationDAO.deleteReservation(id);
     }
 
     @Override
-    public List<Reservation> getReservationsByClientId(UUID clientId) {
-        return reservationDAO.findReservationsByClientId(clientId);
+    public List<Reservation> searchReservationByStatut(String statutReservation) {
+        return reservationDAO.searchReservationByStatut(statutReservation);
     }
 }

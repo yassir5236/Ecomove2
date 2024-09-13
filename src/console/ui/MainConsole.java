@@ -12,7 +12,7 @@ public class MainConsole {
     private final TrajetUI trajetUI;  // Ajout du TrajetUI
     private final Scanner scanner;
     private final ClientUI clientUI;
-    private final ReservationUI reservationUI;
+//    private final ReservationUI reservationUI;
 
     public MainConsole() {
         this.partenaireUI = new PartenaireUI();
@@ -22,7 +22,7 @@ public class MainConsole {
         this.trajetUI = new TrajetUI();  // Initialisation du TrajetUI
         this.scanner = new Scanner(System.in);
         this.clientUI = new ClientUI();
-        this.reservationUI = new ReservationUI();
+//        this.reservationUI = new ReservationUI();
     }
 
     public void start() {
@@ -90,7 +90,7 @@ public class MainConsole {
                 clientUI.start(scanner);
                 break;
             case 6:
-                reservationUI.start(scanner);
+//                reservationUI.start(scanner);
                 break;
             case 7:
                 trajetUI.start();  // Appel à TrajetUI

@@ -1,24 +1,21 @@
 package model;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
+
+
 
 public class Reservation {
     private UUID id;
     private UUID clientId;
-    private UUID billetId;
-    private LocalDateTime dateReservation; // Utilisation de LocalDateTime
+    private String statutReservation; // Possible values: "Reserve", "Annule", "Confirme"
 
-    public Reservation(UUID id, UUID clientId, UUID billetId, LocalDateTime dateReservation) {
+    public Reservation(UUID id, UUID clientId, String statutReservation) {
         this.id = id;
         this.clientId = clientId;
-        this.billetId = billetId;
-        this.dateReservation = dateReservation;
+        this.statutReservation = statutReservation;
     }
 
-
-
-    // Getters et Setters
+    // Getters and setters
     public UUID getId() {
         return id;
     }
@@ -35,19 +32,11 @@ public class Reservation {
         this.clientId = clientId;
     }
 
-    public UUID getBilletId() {
-        return billetId;
+    public String getStatutReservation() {
+        return statutReservation;
     }
 
-    public void setBilletId(UUID billetId) {
-        this.billetId = billetId;
-    }
-
-    public LocalDateTime getDateReservation() {
-        return dateReservation;
-    }
-
-    public void setDateReservation(LocalDateTime dateReservation) {
-        this.dateReservation = dateReservation;
+    public void setStatutReservation(String statutReservation) {
+        this.statutReservation = statutReservation;
     }
 }

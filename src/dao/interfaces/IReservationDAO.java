@@ -7,10 +7,10 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IReservationDAO {
-    boolean addReservation(Reservation reservation);
-    Optional<Reservation> findReservationById(UUID reservationId);
+    void addReservation(Reservation reservation);
     List<Reservation> getAllReservations();
-    boolean updateReservation(Reservation reservation);
-    boolean deleteReservation(UUID reservationId);
-    List<Reservation> findReservationsByClientId(UUID clientId);
+    Optional<Reservation> getReservationById(UUID id);
+    void updateReservation(Reservation reservation);
+    void deleteReservation(UUID id);
+    List<Reservation> searchReservationByStatut(String statutReservation);
 }

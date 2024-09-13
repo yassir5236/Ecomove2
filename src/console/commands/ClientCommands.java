@@ -5,6 +5,7 @@ import model.Client;
 import service.BilletService;
 import service.ClientService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
@@ -70,28 +71,32 @@ public class ClientCommands {
             client.setTelephone(telephone);
         }
 
-        // Appel à la méthode de ClientService qui renvoie un boolean
+        // Appel à la méthozde de ClientService qui renvoie un boolean
         return clientService.updateClient(client);
     }
 
 
     public void searchBillets(String villeDepart, String villeDestination, String dateDepart) {
-        List<Billet> billets = billetService.searchBillets(villeDepart, villeDestination, dateDepart);
+        List<Billet> billets = billetService.searchBillets(villeDepart, villeDestination, LocalDate.parse(dateDepart));
 
         if (billets.isEmpty()) {
             System.out.println("Aucun billet trouvé pour les critères spécifiés.");
         } else {
-            System.out.println("Billets trouvés :");
+            System.out.println("=== Billets trouvés ===");
             for (Billet billet : billets) {
-                System.out.println("ID: " + billet.getId());
+                System.out.println("ID du billet: " + billet.getId());
                 System.out.println("Type de transport: " + billet.getTypeTransport());
                 System.out.println("Prix d'achat: " + billet.getPrixAchat());
                 System.out.println("Prix de vente: " + billet.getPrixVente());
                 System.out.println("Date de vente: " + billet.getDateVente());
                 System.out.println("Statut du billet: " + billet.getStatutBillet());
+                System.out.println("Nom de la compagnie: " + billet.getNomCompagnie());
+                System.out.println("Ville de départ: " + billet.getVilleDepart());
+                System.out.println("Ville de destination: " + billet.getVilleDestination());
                 System.out.println("Date de départ: " + billet.getDateDepart());
                 System.out.println("Horaire: " + billet.getHoraire());
-                System.out.println("---");
+                System.out.println("Durée du trajet: " + billet.getDuree() + " heures");
+                System.out.println("-----------------------------------");
             }
         }
     }

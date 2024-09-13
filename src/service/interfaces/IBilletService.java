@@ -3,6 +3,7 @@ package service.interfaces;
 
 import model.Billet;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +13,6 @@ public interface IBilletService {
     Billet getBilletById(UUID id);
     void updateBillet(Billet billet);
     void deleteBillet(UUID id);
-    List<Billet> searchBillets(String villeDepart, String villeDestination, String dateDepart);
+    List<Billet> searchBillets(String villeDepart, String villeDestination, LocalDate dateDepart);
 }
 
