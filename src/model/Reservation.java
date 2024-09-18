@@ -14,6 +14,10 @@ public class Reservation {
         this.clientId = clientId;
         this.statutReservation = statutReservation;
     }
+    public Reservation(UUID id, UUID clientId) {
+        this.id = id;
+        this.clientId = clientId;
+    }
 
     // Getters and setters
     public UUID getId() {

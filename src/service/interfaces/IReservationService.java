@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface IReservationService {
     // Ajouter une nouvelle réservation
-    void addReservation(Reservation reservation);
+    void addReservation(Reservation reservation , UUID billetId);
 
     // Récupérer toutes les réservations
     List<Reservation> getAllReservations();

@@ -12,8 +12,8 @@ public class ReservationService implements IReservationService {
     private final ReservationDAO reservationDAO = new ReservationDAO();
 
     @Override
-    public void addReservation(Reservation reservation) {
-        reservationDAO.addReservation(reservation);
+    public void addReservation(Reservation reservation, UUID billetId) {
+        reservationDAO.addReservation(reservation,billetId);
     }
 
     @Override

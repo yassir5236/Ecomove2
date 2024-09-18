@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IReservationDAO {
-    void addReservation(Reservation reservation);
+    void addReservation(Reservation reservation,UUID billetId);
     List<Reservation> getAllReservations();
     Optional<Reservation> getReservationById(UUID id);
     void updateReservation(Reservation reservation);

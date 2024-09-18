@@ -20,15 +20,41 @@ public class ReservationDAO implements IReservationDAO {
     }
 
     @Override
-    public void addReservation(Reservation reservation) {
-        String sql = "INSERT INTO reservation (id, clientid, statut_reservation) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, reservation.getId());
-            ps.setObject(2, reservation.getClientId());
-            ps.setString(3, reservation.getStatutReservation());
-            ps.executeUpdate();
+    public void addReservation(Reservation reservation, UUID billetId) {
+        String sql1 = "INSERT INTO reservation (id, clientid, statut_reservation) VALUES (?, ?, ?)";
+        String sql2 = "INSERT INTO billet_reservation (billet_id, reservation_id) VALUES (?, ?)";
+
+        try {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement ps = connection.prepareStatement(sql1)) {
+                ps.setObject(1, reservation.getId());
+                ps.setObject(2, reservation.getClientId());
+                // Assurez-vous que statut_reservation est 'Reserve', 'Annule', ou 'Confirme'
+                ps.setString(3, reservation.getStatutReservation());
+                ps.executeUpdate();
+            }
+
+            try (PreparedStatement ps = connection.prepareStatement(sql2)) {
+                ps.setObject(1, billetId);
+                ps.setObject(2, reservation.getId());
+                ps.executeUpdate();
+            }
+
+            connection.commit();
         } catch (SQLException e) {
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
             e.printStackTrace();
+        } finally {
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 

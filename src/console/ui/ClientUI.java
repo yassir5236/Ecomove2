@@ -2,13 +2,16 @@ package console.ui;
 
 import console.commands.BilletCommands;
 import console.commands.ClientCommands;
+import console.commands.ReservationCommands;
+
 import model.Client;
 
 import java.util.Scanner;
 
 public class ClientUI {
     private final ClientCommands clientCommands = new ClientCommands();
-    private final BilletCommands billetCommands = new BilletCommands(); // On ajoute BilletCommands pour la recherche des billets
+    private final BilletCommands billetCommands = new BilletCommands();
+    private final ReservationCommands reservationCommands = new ReservationCommands();
 
     public void start(Scanner scanner) {
         boolean running = true;
@@ -29,7 +32,8 @@ public class ClientUI {
                         handleAccountManagement(scanner);
                         break;
                     case 2:
-                        handleSearchBillet(scanner);  // Ajoute cette méthode
+                        handleSearchBillet(scanner);
+                        reservationCommands.add();
                         break;
                     case 3:
                         running = false;
