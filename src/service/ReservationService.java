@@ -5,6 +5,7 @@ import model.Reservation;
 import service.interfaces.IReservationService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,8 +23,8 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public Optional<Reservation> getReservationById(UUID id) {
-        return reservationDAO.getReservationById(id);
+    public Optional<Map<String,Object>> getReservationById(UUID id) {
+        return reservationDAO.getDetailedReservationById(id);
     }
 
     @Override
@@ -40,4 +41,6 @@ public class ReservationService implements IReservationService {
     public List<Reservation> searchReservationByStatut(String statutReservation) {
         return reservationDAO.searchReservationByStatut(statutReservation);
     }
+
+
 }

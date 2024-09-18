@@ -20,7 +20,9 @@ public class ClientUI {
             System.out.println("=== Menu Client ===");
             System.out.println("1. Gérer votre compte");
             System.out.println("2. Recherche de billets");
-            System.out.println("3. Retour au menu principal");
+            System.out.println("3. afficher mes reservation");
+            System.out.println("4. Retour au menu principal");
+
             System.out.print("Choisissez une option : ");
 
             if (scanner.hasNextInt()) {
@@ -36,6 +38,9 @@ public class ClientUI {
                         reservationCommands.add();
                         break;
                     case 3:
+                        reservationCommands.displayReservation();
+
+                    case 4:
                         running = false;
                         break;
                     default:

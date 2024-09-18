@@ -4,6 +4,7 @@ package service.interfaces;
 import model.Reservation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,7 +16,7 @@ public interface IReservationService {
     List<Reservation> getAllReservations();
 
     // Récupérer une réservation par son ID
-    Optional<Reservation> getReservationById(UUID id);
+    Optional <Map<String,Object>>getReservationById(UUID id);
 
     // Mettre à jour une réservation existante
     void updateReservation(Reservation reservation);

@@ -4,10 +4,8 @@ import dao.interfaces.IReservationDAO;
 import model.Reservation;
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+
 import util.DatabaseConnection;
 
 
@@ -74,13 +72,31 @@ public class ReservationDAO implements IReservationDAO {
     }
 
     @Override
-    public Optional<Reservation> getReservationById(UUID id) {
-        String sql = "SELECT * FROM reservation WHERE id = ?";
+    public Optional<Map<String, Object>> getDetailedReservationById(UUID id) {
+        String sql = "SELECT c.nom AS client_nom, b.id AS billet_id, b.date_depart AS date_depart, r.statut_reservation, "
+                + "v_depart.nom AS ville_depart, v_destination.nom AS ville_destination, t.duree AS duree_trajet "
+                + "FROM reservation r "
+                + "JOIN client c ON r.clientid = c.id "
+                + "JOIN billet_reservation br ON r.id = br.reservation_id "
+                + "JOIN billet b ON br.billet_id = b.id "
+                + "JOIN trajet t ON b.trajet_id = t.id "
+                + "JOIN ville v_depart ON t.ville_depart_id = v_depart.id "
+                + "JOIN ville v_destination ON t.ville_destination_id = v_destination.id "
+                + "WHERE c.id = ?";
+
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setObject(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return Optional.of(mapResultSetToReservation(rs));
+                    Map<String, Object> reservationData = new HashMap<>();
+                    reservationData.put("client_nom", rs.getString("client_nom"));
+                    reservationData.put("billet_id", rs.getObject("billet_id", UUID.class));
+                    reservationData.put("date_depart", rs.getDate("date_depart").toLocalDate());
+                    reservationData.put("statut_reservation", rs.getString("statut_reservation"));
+                    reservationData.put("ville_depart", rs.getString("ville_depart"));
+                    reservationData.put("ville_destination", rs.getString("ville_destination"));
+                    reservationData.put("duree_trajet", rs.getDouble("duree_trajet"));
+                    return Optional.of(reservationData);
                 }
             }
         } catch (SQLException e) {
@@ -88,6 +104,8 @@ public class ReservationDAO implements IReservationDAO {
         }
         return Optional.empty();
     }
+
+
 
     @Override
     public void updateReservation(Reservation reservation) {

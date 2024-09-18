@@ -6,9 +6,7 @@ import service.ReservationService;
 import service.BilletService;
 import java.time.LocalDateTime;
 
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import java.util.*;
 
 public class ReservationCommands {
 
@@ -27,25 +25,16 @@ public class ReservationCommands {
         reservationId = UUID.randomUUID(); // Générer un nouvel ID UUID pour la réservation
 
         try {
-            System.out.print("Enter billet ID: ");
-            String billetIdInput = scanner.nextLine(); // Lire l'entrée comme une chaîne
-            billetId = UUID.fromString(billetIdInput); // Convertir en UUID
+            System.out.print("Enter billet ID for reservation : ");
 
-            System.out.print("Enter client ID: ");
+            String billetIdInput = scanner.nextLine();
+            billetId = UUID.fromString(billetIdInput);
+
+            System.out.print("Enter client ID for the person who going to make the reservation : ");
             String clientIdInput = scanner.nextLine();
-            clientId = UUID.fromString(clientIdInput); // Convertir en UUID
+            clientId = UUID.fromString(clientIdInput);
 
-            // Vous devez vérifier que l'UUID du billet et du client existent dans la base de données
-            // Par exemple :
-//            if (!isBilletExists(billetId)) {
-//                System.out.println("Billet ID does not exist.");
-//                return;
-//            }
 
-//            if (!isClientExists(clientId)) {
-//                System.out.println("Client ID does not exist.");
-//                return;
-//            }
 
             // Demander le statut de réservation
             System.out.print("Enter reservation status (Reserve, Annule, Confirme): ");
@@ -69,18 +58,37 @@ public class ReservationCommands {
         }
     }
 
-    // Méthodes de vérification des existences (à implémenter)
-//    private boolean isBilletExists(UUID billetId) {
-//        // Vérifiez dans la base de données si le billet existe
-//        // Exemple d'implémentation :
-//        return billetDAO.billetExists(billetId);
-//    }
 
-//    private boolean isClientExists(UUID clientId) {
-//        // Vérifiez dans la base de données si le client existe
-//        // Exemple d'implémentation :
-//        return clientDAO.clientExists(clientId);
-//    }
+   public void  displayReservation(){
+       UUID id ;
+       System.out.println("Enter your id ");
+       String idInput =scanner.nextLine();
+       id = UUID.fromString(idInput);
+       ReservationService reservationService = new ReservationService();
+
+       Optional<Map<String, Object>> reservationOpt = reservationService.getReservationById(id);
+
+       if (reservationOpt.isPresent()) {
+           Map<String, Object> reservation = reservationOpt.get();
+           System.out.println("==============================");
+           System.out.println(" Détails de la Réservation ");
+           System.out.println("==============================");
+           System.out.println("Nom du client : " + reservation.get("client_nom"));
+           System.out.println("ID du billet : " + reservation.get("billet_id"));
+           System.out.println("Date de départ : " + reservation.get("date_depart"));
+           System.out.println("Statut de la réservation : " + reservation.get("statut_reservation"));
+           System.out.println("Ville de départ : " + reservation.get("ville_depart"));
+           System.out.println("Ville de destination : " + reservation.get("ville_destination"));
+           System.out.println("Durée du trajet : " + reservation.get("duree_trajet") + " heures");
+           System.out.println("==============================");
+       } else {
+           System.out.println("Aucune réservation trouvée pour cet ID.");
+       }
+
+   }
+
+
+
 
 
 
