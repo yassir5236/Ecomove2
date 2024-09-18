@@ -22,7 +22,7 @@ public interface IReservationService {
     void updateReservation(Reservation reservation);
 
     // Supprimer une réservation par son ID
-    void deleteReservation(UUID id);
+    void cancelledReservation(UUID id);
 
     // Rechercher des réservations par statut
     List<Reservation> searchReservationByStatut(String statutReservation);

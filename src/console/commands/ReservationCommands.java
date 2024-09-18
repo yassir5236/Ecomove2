@@ -59,10 +59,10 @@ public class ReservationCommands {
     }
 
 
-   public void  displayReservation(){
-       UUID id ;
-       System.out.println("Enter your id ");
-       String idInput =scanner.nextLine();
+   public boolean  displayReservation() {
+       UUID id;
+       System.out.println("Enter client id ");
+       String idInput = scanner.nextLine();
        id = UUID.fromString(idInput);
        ReservationService reservationService = new ReservationService();
 
@@ -73,6 +73,8 @@ public class ReservationCommands {
            System.out.println("==============================");
            System.out.println(" Détails de la Réservation ");
            System.out.println("==============================");
+           System.out.println("Reservation ID  : " + reservation.get("reservation_id"));
+
            System.out.println("Nom du client : " + reservation.get("client_nom"));
            System.out.println("ID du billet : " + reservation.get("billet_id"));
            System.out.println("Date de départ : " + reservation.get("date_depart"));
@@ -81,9 +83,37 @@ public class ReservationCommands {
            System.out.println("Ville de destination : " + reservation.get("ville_destination"));
            System.out.println("Durée du trajet : " + reservation.get("duree_trajet") + " heures");
            System.out.println("==============================");
+           return true;
        } else {
            System.out.println("Aucune réservation trouvée pour cet ID.");
+           return false;
        }
+
+   }
+
+
+       public void cancelledReservation() {
+           System.out.println("Do you want to cancelled  the reservation? (yes/no)");
+
+           String response = scanner.nextLine().trim().toLowerCase();
+
+           if ("yes".equals(response)) {
+               System.out.println("Enter the reservation ID (UUID format): ");
+               String idInput = scanner.nextLine().trim();
+
+               try {
+                   UUID id = UUID.fromString(idInput);
+                   ReservationService reservationService = new ReservationService();
+                   reservationService.cancelledReservation(id);
+//                   System.out.println("Reservation deleted successfully.");
+               } catch (IllegalArgumentException e) {
+                   System.out.println("Invalid UUID format. Please enter a valid UUID.");
+               }
+           } else {
+               System.out.println("Operation cancelled.");
+           }
+       }
+
 
    }
 
@@ -92,4 +122,4 @@ public class ReservationCommands {
 
 
 
-}
+

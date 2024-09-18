@@ -12,6 +12,6 @@ public interface IReservationDAO {
     List<Reservation> getAllReservations();
     Optional<Map<String, Object>> getDetailedReservationById(UUID id);
     void updateReservation(Reservation reservation);
-    void deleteReservation(UUID id);
+    void cancelledReservation(UUID id);
     List<Reservation> searchReservationByStatut(String statutReservation);
 }

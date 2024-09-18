@@ -33,8 +33,8 @@ public class ReservationService implements IReservationService {
     }
 
     @Override
-    public void deleteReservation(UUID id) {
-        reservationDAO.deleteReservation(id);
+    public void cancelledReservation(UUID id) {
+        reservationDAO.cancelledReservation(id);
     }
 
     @Override

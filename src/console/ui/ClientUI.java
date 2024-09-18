@@ -38,7 +38,11 @@ public class ClientUI {
                         reservationCommands.add();
                         break;
                     case 3:
-                        reservationCommands.displayReservation();
+
+                        if( reservationCommands.displayReservation()){
+                            reservationCommands.cancelledReservation();
+
+                        }
 
                     case 4:
                         running = false;
