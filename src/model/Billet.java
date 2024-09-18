@@ -23,21 +23,7 @@ public class Billet {
     private String villeDepart;
     private String villeDestination;
 
-    // Constructeur complet
-//    public Billet(UUID id, TypeTransport typeTransport, BigDecimal prixAchat, BigDecimal prixVente,
-//                  Timestamp dateVente, StatutBillet statutBillet, UUID contratId, int trajetId,
-//                  java.sql.Date dateDepart, java.sql.Time horaire) {
-//        this.id = id;
-//        this.typeTransport = typeTransport;
-//        this.prixAchat = prixAchat;
-//        this.prixVente = prixVente;
-//        this.dateVente = dateVente;
-//        this.statutBillet = statutBillet;
-//        this.contratId = contratId;
-//        this.trajetId = trajetId;
-//        this.dateDepart = dateDepart;
-//        this.horaire = horaire;
-//    }
+
 
 
     public Billet(UUID id, TypeTransport typeTransport, BigDecimal prixAchat, BigDecimal prixVente,
@@ -59,6 +45,10 @@ public class Billet {
         this.villeDepart = villeDepart;
         this.villeDestination = villeDestination;
     }
+
+
+
+
 
     // Getters et Setters
     public UUID getId() {
@@ -175,6 +165,7 @@ public class Billet {
 
     // Méthode toString pour afficher les informations du billet
     @Override
+
     public String toString() {
         return "Billet{" +
                 "id=" + id +
@@ -187,6 +178,11 @@ public class Billet {
                 ", trajetId=" + trajetId +
                 ", dateDepart=" + dateDepart +
                 ", horaire=" + horaire +
+                ", duree=" + duree +
+                ", nomCompagnie='" + nomCompagnie + '\'' +
+                ", villeDepart='" + villeDepart + '\'' +
+                ", villeDestination='" + villeDestination + '\'' +
                 '}';
     }
+
 }

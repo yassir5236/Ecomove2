@@ -48,29 +48,44 @@ public class BilletDAO implements IBilletDAO {
     @Override
     public List<Billet> getAllBillets() {
         List<Billet> billets = new ArrayList<>();
-        String query = "SELECT * FROM billet";
+        String query = "SELECT b.id, b.type_transport, b.prix_achat, b.prix_vente, b.date_vente, b.statut_billet, "
+                + "b.contrat_id, b.trajet_id, b.date_depart, b.horaire, "
+                + "t.duree AS duree_trajet, p.nom_compagnie, "
+                + "v_depart.nom AS ville_depart, v_destination.nom AS ville_destination "
+                + "FROM billet b "
+                + "JOIN trajet t ON b.trajet_id = t.id "
+                + "JOIN contrat c ON b.contrat_id = c.id "
+                + "JOIN partenaire p ON c.partenaire_id = p.id "
+                + "JOIN ville v_depart ON t.ville_depart_id = v_depart.id "
+                + "JOIN ville v_destination ON t.ville_destination_id = v_destination.id";
 
         try (Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
+
+
                 UUID id = (UUID) resultSet.getObject("id");
-                UUID contratId = (UUID) resultSet.getObject("contrat_id");
-                int trajetId = resultSet.getInt("trajet_id");
                 TypeTransport typeTransport = TypeTransport.valueOf(resultSet.getString("type_transport").toUpperCase());
                 BigDecimal prixAchat = resultSet.getBigDecimal("prix_achat");
                 BigDecimal prixVente = resultSet.getBigDecimal("prix_vente");
                 Timestamp dateVente = resultSet.getTimestamp("date_vente");
                 StatutBillet statutBillet = StatutBillet.valueOf(resultSet.getString("statut_billet").toUpperCase());
+                UUID contratId = (UUID) resultSet.getObject("contrat_id");
+                int trajetId = resultSet.getInt("trajet_id");
                 java.sql.Date dateDepart = resultSet.getDate("date_depart");
                 java.sql.Time horaire = resultSet.getTime("horaire");
-                BigDecimal duree = resultSet.getBigDecimal("duree");
+                BigDecimal duree = resultSet.getBigDecimal("duree_trajet");
                 String nomCompagnie = resultSet.getString("nom_compagnie");
                 String villeDepart = resultSet.getString("ville_depart");
                 String villeDestination = resultSet.getString("ville_destination");
 
-                Billet billet = new Billet(id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId, dateDepart, horaire, duree, nomCompagnie, villeDepart, villeDestination);
+                Billet billet = new Billet(
+                        id, typeTransport, prixAchat, prixVente, dateVente, statutBillet, contratId, trajetId,
+                        dateDepart, horaire, duree, nomCompagnie, villeDepart, villeDestination
+                );
                 billets.add(billet);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
